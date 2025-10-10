@@ -83,7 +83,6 @@ resource "aws_iam_role_policy_attachment" "load_balancer_controller" {
 }
 
 
-
 #create workers instance profile so that ec2 can assume node role
 
 resource "aws_iam_instance_profile" "eks_workers_instance_profile" {

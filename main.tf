@@ -22,3 +22,14 @@ module "iam" {
   source = "./modules/iam"
   eks_cluster_name = var.eks_cluster_name
 }
+
+
+module "eks_cluster" {
+  source = "./modules/eks_cluster"
+  vpc_id = module.vpc.vpc_id
+  eks_cluster_name = var.eks_cluster_name
+  eks_cluster_role_arn = module.iam.eks_cluster_role_arn
+  backend_subnet_ids = module.vpc.backend_subnet_ids
+  eks_cluster_policy_attachment = module.iam.eks_cluster_policy_attachment
+  eks_service_policy_attachment = module.iam.eks_service_policy_attachment
+}
