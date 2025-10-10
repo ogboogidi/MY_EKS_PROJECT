@@ -35,7 +35,7 @@ resource "aws_vpc_security_group_ingress_rule" "allow_SSH" {
 
 resource "aws_vpc_security_group_ingress_rule" "allow_eks_cluster_api_server" {
   security_group_id = aws_security_group.eks_workers_node_sg.id
-  referenced_security_group_id = aws_security_group.eks_cluster_sg.id
+  referenced_security_group_id = var.eks_cluster_sg_id
   from_port = 443
   ip_protocol = "tcp"
   to_port = 443
@@ -73,7 +73,7 @@ resource "aws_launch_template" "eks_lt" {
 
 
   network_interfaces {
-    security_groups = aws_security_group.eks_workers_node_sg.id
+    security_groups = [aws_security_group.eks_workers_node_sg.id]
     associate_public_ip_address = true
   }
 

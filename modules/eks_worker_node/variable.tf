@@ -34,6 +34,10 @@ variable "cluster_ca_certificate" {
   type = string
 }
 
-variable "frontend_subnet_ids" {
-  type = list(string)
+ variable "frontend_subnet_ids" {
+   type = list(string)
+ }
+
+variable "eks_cluster_sg_id" {
+  type = string
 }

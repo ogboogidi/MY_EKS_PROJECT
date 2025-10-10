@@ -77,12 +77,21 @@ resource "aws_iam_role_policy_attachment" "AmazonEKSVPCResourceController" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSVPCResourceController"
 }
 
-resource "aws_iam_role_policy_attachment" "load_balancer_controller" {
-  role = aws_iam_role.eks_worker_node.name
-  policy_arn = "arn:aws:iam::450665609241:policy/AWSLoadBalancerControllerIAMPolicy"
+#########################################################################################################
+
+resource "aws_iam_policy" "load_balancer_controller_policy" {
+  name = "eks_workers_node_load_balancer_controller_policy"
+  policy = file("${path.root}/iam_policy.json")
 }
 
 
+resource "aws_iam_role_policy_attachment" "load_balancer_controller" {
+  role = aws_iam_role.eks_worker_node.name
+  policy_arn = aws_iam_policy.load_balancer_controller_policy.arn
+  
+}
+
+##########################################################################################################################
 #create workers instance profile so that ec2 can assume node role
 
 resource "aws_iam_instance_profile" "eks_workers_instance_profile" {
