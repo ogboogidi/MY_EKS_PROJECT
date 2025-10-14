@@ -1,0 +1,14 @@
+{
+  "name": "Terraform AWS Dev (with kubectl + docker)",
+  "build": { "dockerfile": "Dockerfile" },
+  "remoteUser": "vscode",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-azuretools.vscode-docker",
+        "ms-kubernetes-tools.vscode-kubernetes-tools",
+        "amazonwebservices.aws-toolkit-vscode"
+      ]
+    }
+  }
+}
