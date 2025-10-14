@@ -91,17 +91,19 @@ resource "aws_launch_template" "eks_lt" {
 
 
  user_data = base64encode(<<-EOF
- #!/bin/bash
+     #!/bin/bash
     set -o xtrace
-    /etc/eks/bootstrap.sh ${var.eks_cluster_name} \
+    /etc/eks/bootstrap.sh ${var.cluster_name} \
       --apiserver-endpoint ${var.eks_cluster_endpoint} \
       --b64-cluster-ca ${var.cluster_ca_certificate}
     EOF
  )
+ 
+
 }
 
 
-#CREATE HE ASG
+#CREATE THE ASG
 
 resource "aws_autoscaling_group" "eks_workers_node_asg" {
   desired_capacity = 2
@@ -117,7 +119,7 @@ resource "aws_autoscaling_group" "eks_workers_node_asg" {
   vpc_zone_identifier = var.frontend_subnet_ids[*]
 
   tag {
-    key = "kubernetes.io/cluster/${var.eks_cluster_name}"
+    key = "kubernetes.io/cluster/${var.cluster_name}"
     value = "owned"
     propagate_at_launch = true
   }

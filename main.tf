@@ -5,7 +5,7 @@ provider "aws" {
 
 
 data "aws_eks_cluster_auth" "my_eks_cluster_auth" {
-  name = module.eks_cluster.eks_cluster_name
+  name = module.eks_cluster.cluster_name
 }
 
 
@@ -51,6 +51,7 @@ module "eks_workers_node" {
   vpc_id                   = module.vpc.vpc_id
   vpc_cidr_block           = var.vpc_cidr_block
   eks_cluster_name         = var.eks_cluster_name
+  cluster_name             = module.eks_cluster.cluster_name
   eks_cluster_endpoint     = module.eks_cluster.eks_cluster_endpoint
   image_id                 = var.image_id
   key_name                 = var.key_name
@@ -59,7 +60,7 @@ module "eks_workers_node" {
   cluster_ca_certificate   = module.eks_cluster.cluster_ca_certificate
   frontend_subnet_ids      = module.vpc.frontend_subnet_ids
   eks_cluster_sg_id        = module.eks_cluster.eks_cluster_sg_id
-
-
+ 
+  depends_on = [module.eks_cluster]
 
 }
