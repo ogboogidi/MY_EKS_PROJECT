@@ -21,3 +21,4 @@ variable "eks_service_policy_attachment" {
 variable "vpc_id" {
   type = string
 }
+
