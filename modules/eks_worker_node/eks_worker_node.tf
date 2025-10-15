@@ -66,7 +66,7 @@ resource "aws_vpc_security_group_egress_rule" "allow_all_traffic_eks_workers_nod
 #create a launch template for eks_workers_node auto scaling group
 
 resource "aws_launch_template" "eks_lt" {
-  name_prefix = "${var.eks_cluster_name}-lt"
+  name_prefix = "${var.k8_cluster}-lt"
   image_id = var.image_id
   key_name = var.key_name
   instance_type = var.instance_type

@@ -1,5 +1,5 @@
 resource "aws_iam_role" "eks_cluster_role" {
-  name = "${var.eks_cluster_name}-eks_cluster_role"
+  name = "${var.k8_cluster}-cluster_role"
   
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -28,10 +28,10 @@ resource "aws_iam_role_policy_attachment" "eks_service_policy" {
 }
 
 
-
+###############################################################################
 # create worker node role and attachment
 resource "aws_iam_role" "eks_worker_node" {
-  name = "${var.eks_cluster_name}-eks_worker_node"
+  name = "${var.k8_cluster}-worker_node"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"

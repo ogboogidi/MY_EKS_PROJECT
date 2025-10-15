@@ -30,14 +30,32 @@ module "vpc" {
 
 module "iam" {
   source           = "./modules/iam"
-  eks_cluster_name = var.eks_cluster_name
+  k8_cluster       = var.k8_cluster
 }
+
+resource "kubernetes_config_map" "aws_auth" {
+  metadata {
+    name      = "aws-auth"
+    namespace = "kube-system"
+  }
+
+  data = {
+    mapRoles = <<YAML
+- rolearn: ${module.iam.eks_worker_node_arn}
+  username: system:node:{{EC2PrivateDNSName}}
+  groups:
+    - system:bootstrappers
+    - system:nodes
+    YAML
+  }
+}
+
 
 
 module "eks_cluster" {
   source                        = "./modules/eks_cluster"
   vpc_id                        = module.vpc.vpc_id
-  eks_cluster_name              = var.eks_cluster_name
+  k8_cluster                    = var.k8_cluster
   eks_cluster_role_arn          = module.iam.eks_cluster_role_arn
   backend_subnet_ids            = module.vpc.backend_subnet_ids
   eks_cluster_policy_attachment = module.iam.eks_cluster_policy_attachment
@@ -50,7 +68,7 @@ module "eks_workers_node" {
   source                   = "./modules/eks_worker_node"
   vpc_id                   = module.vpc.vpc_id
   vpc_cidr_block           = var.vpc_cidr_block
-  eks_cluster_name         = var.eks_cluster_name
+  k8_cluster               = var.k8_cluster
   cluster_name             = module.eks_cluster.cluster_name
   eks_cluster_endpoint     = module.eks_cluster.eks_cluster_endpoint
   image_id                 = var.image_id
