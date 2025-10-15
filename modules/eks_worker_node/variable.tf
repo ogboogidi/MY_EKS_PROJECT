@@ -6,7 +6,7 @@ variable "vpc_cidr_block" {
   type = string
 }
 
-variable "eks_cluster_name" {
+variable "k8_cluster" {
   type = string
 }
 

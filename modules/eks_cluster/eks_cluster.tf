@@ -51,7 +51,7 @@ resource "aws_vpc_security_group_egress_rule" "allow_all_traffic_eks_cluster" {
 # create the eks cluster resource
 
 resource "aws_eks_cluster" "eks_cluster" {
-  name = "${var.eks_cluster_name}"
+  name = "${var.k8_cluster}"
   role_arn = var.eks_cluster_role_arn
 
   vpc_config {

@@ -14,8 +14,12 @@ output "eks_service_policy_attachment" {
 
 #outputs for worker_nodes
 
-output "eks_worker_node_arn" {
+output "eks_worker_node_name" {
   value = aws_iam_role.eks_worker_node.name
+}
+
+output "eks_worker_node_arn" {
+  value = aws_iam_role.eks_worker_node.arn
 }
 
 output "eks_worker_node_policy_attachment" {

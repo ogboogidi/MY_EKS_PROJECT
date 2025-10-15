@@ -14,7 +14,7 @@ variable "backend_subnets_cidr_block" {
   type = list(string)
 }
 
-variable "eks_cluster_name" {
+variable "k8_cluster" {
   type = string
 }
 
