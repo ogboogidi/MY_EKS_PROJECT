@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jupiter-frontend-pod
+spec:
+  replicas: 2
+  selector: 
+    matchLabels: 
+      app: jupiter-frontend
+  template:
+    metadata:
+      labels:
+        app: jupiter-frontend
+    spec: 
+      containers:
+      - name: jupiter-frontend-pod
+        image: ogboocloudpract/jupiter-app:1.0.0
+        resources:
+          requests: 
+            memory: "64Mi"
+            cpu: "50m"
+          limits:
+            memory: "128Mi"
+            cpu: "100m"
+        ports:
+        - containerPort: 80
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: jupiter-frontend-service
+spec:
+  selector:
+    app: jupiter-frontend
+  ports:
+  - port: 80
+    targetPort: 80
+  type: LoadBalancer
+
+

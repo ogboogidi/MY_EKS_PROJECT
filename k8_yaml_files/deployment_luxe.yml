@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: luxe-pod
+spec:
+  replicas: 2
+  selector: 
+    matchLabels: 
+      app: luxe-frontend
+  template:
+    metadata:
+      labels:
+        app: luxe-frontend
+    spec: 
+      containers:
+      - name: luxe-frontend-pod
+        image: ogboocloudpract/luxe-app:1.0.0
+        resources:
+          requests: 
+            memory: "64Mi"
+            cpu: "50m"
+          limits:
+            memory: "128Mi"
+            cpu: "100m"
+        ports:
+        - containerPort: 80
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: luxe-frontend-service
+spec:
+  selector:
+    app: luxe-frontend
+  ports:
+  - port: 80
+    targetPort: 80
+  type: LoadBalancer
+
+

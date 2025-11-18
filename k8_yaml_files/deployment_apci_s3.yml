@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: apci-s3-reader-frontend
+spec:
+  replicas: 2
+  selector: 
+    matchLabels: 
+      app: apci-s3-reader-frontend
+  template:
+    metadata:
+      labels:
+        app: apci-s3-reader-frontend
+    spec: 
+      containers:
+      - name: apci-s3-reader-frontend-pod
+        image: ogboocloudpract/apci-s3-reader-app:3.0.0
+        resources:
+          requests: 
+            memory: "64Mi"
+            cpu: "50m"
+          limits:
+            memory: "128Mi"
+            cpu: "100m"
+        ports:
+        - containerPort: 3000
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: apci-s3-reader-frontend-service
+spec:
+  selector:
+    app: apci-s3-reader-frontend
+  ports:
+  - port: 80
+    targetPort: 3000
+    protocol: TCP
+    name: http
+  type: LoadBalancer
+
+
