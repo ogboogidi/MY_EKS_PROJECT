@@ -1,0 +1,61 @@
+JENKINS NODE SCRIPTED PIPELINE PROJECT PRIVATE REPO (MON, 17/NOV)
+
+node {
+    def MAVEN_HOME = tool name:'maven3.9.11'
+    
+    stage('1.checkout scm') {
+        echo 'cloning code'
+        git branch: 'main', credentialsId: 'github_jenkins15', url: 'https://github.com/ogboogidi/maven_web_application_project.git'
+    }
+    stage('2.mavenValidate') {
+        echo 'validating code'
+        sh "${MAVEN_HOME}/bin/mvn validate" 
+    }
+    stage('3.mavenComplie') {
+        echo 'compiling code'
+        sh "${MAVEN_HOME}/bin/mvn compile"
+    }
+    stage('4.mavenTest') {
+        echo 'running junit cases'
+        sh "${MAVEN_HOME}/bin/mvn test"
+    }
+    stage('5.mavenBuild') {
+        echo 'packaging code'
+        sh "${MAVEN_HOME}/bin/mvn package"
+    }
+    stage('6.codeAnalysis') {
+        echo 'static code analysis running'
+        sh "${MAVEN_HOME}/bin/mvn sonar:sonar"
+    }
+    stage('7.artifactUpload') {
+        echo 'publishing to artifactory nexus'
+        withCredentials([usernamePassword(credentialsId: 'tomcat_jenkins', passwordVariable: 'NEXUS_PASS', usernameVariable: 'NEXUS_USER')]) {
+          configFileProvider([configFile(fileId: '2aa8bc20-78c2-4ecc-ac5a-dd434789107c', variable: 'SETTINGS_FILE')]) {
+            sh "${MAVEN_HOME}/bin/mvn deploy -s \"${SETTINGS_FILE}\""
+          }
+        }
+    }
+    stage('8.deploy@Dev') {
+        echo "deploying to the Dev env"
+        deploy adapters: [tomcat9(alternativeDeploymentContext: '', credentialsId: 'tomcat_jenkins', path: '', url: 'http://3.94.192.43:8080')], contextPath: '/tesla', war: 'target/*.war'
+    }
+    stage('9.manualApproval') {
+        echo 'review and approve app to UAT for Q/A team'
+        input message: 'kindly review and approve'
+    }
+    stage('10.deploy@UAT') {
+        echo 'deploy to UAT'
+        deploy adapters: [tomcat9(alternativeDeploymentContext: '', credentialsId: 'tomcat_jenkins', path: '', url: 'http://3.94.192.43:8080')], contextPath: '/tesla', war: 'target/*.war'
+    }
+    stage('11.review&Approval') {
+        echo 'approve app to prod'
+        input message: 'approvae application to prod'
+    }
+    stage('12.deploy@Prod'){
+        echo 'deploying final release to prod'
+        deploy adapters: [tomcat9(alternativeDeploymentContext: '', credentialsId: 'tomcat_jenkins', path: '', url: 'http://3.94.192.43:8080')], contextPath: '/tesla', war: 'target/*.war'
+    }
+    stage('13.buildNotification') {
+        emailext body: 'the application is ready for production kindly alert the client to check on the application. we will be standing by for any further escalations.', recipientProviders: [developers(), contributor()], subject: 'application is ready for final release to production', to: 'gamoo040791@gmail.com, ogboogidi@gmail.com'
+    }
+}
