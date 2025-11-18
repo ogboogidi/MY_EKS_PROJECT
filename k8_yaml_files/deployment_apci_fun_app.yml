@@ -1,0 +1,19 @@
+appVersion: apps/v1
+kind: deployment
+metadata: 
+  name: apci-fun-app
+  labels: 
+    app = apci-fun-app-deployment
+spec: 
+  ReplicaSet: 2
+  selector: 
+    metadata: 
+      labels: 
+        app = apci-fun-app-deployment
+  containers:
+    name: apci-fun-app
+    image: juipter:1.0.0
+    containerPort:
+      port: 80
+      targetPort:80
+      
